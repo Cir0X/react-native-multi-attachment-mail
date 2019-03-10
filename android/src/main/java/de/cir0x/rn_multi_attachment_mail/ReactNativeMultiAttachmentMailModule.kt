@@ -2,7 +2,6 @@ package de.cir0x.rn_multi_attachment_mail
 
 import android.content.Intent
 import android.net.Uri
-import android.text.Html
 import com.facebook.react.bridge.*
 import java.io.File
 
