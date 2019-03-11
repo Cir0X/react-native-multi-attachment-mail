@@ -51,7 +51,7 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
         }
 
         // send intent
-        reactContext.startActivity(mailIntent)
+        reactContext.startActivity(Intent.createChooser(mailIntent, "Send mail..."))
 
     }
 
