@@ -57,11 +57,11 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
 
     private fun doesKeyExist(key: String, options: ReadableMap) = options.hasKey(key) && !options.isNull(key)
 
-    private fun ReadableArray.getStringArray() = (0..this.size()).map {
+    private fun ReadableArray.getStringArray() = (0 until this.size()).map {
         this.getString(it)
     }.toTypedArray()
 
-    private fun ReadableArray.getUriArray(): ArrayList<Uri> = (0..this.size()).map {
+    private fun ReadableArray.getUriArray(): ArrayList<Uri> = (0 until this.size()).map {
         val file = File(this.getString(it))
         Uri.fromFile(file)
     }.toCollection(ArrayList())
