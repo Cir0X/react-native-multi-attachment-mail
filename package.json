@@ -10,11 +10,9 @@
   "keywords": [
     "react-native"
   ],
-  "author": "",
-  "license": "",
-  "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
-
-  }
+  "author": {
+    "name": "Wolfhard Prell",
+    "email": "wolfhard.prell@gmail.com"
+  },
+  "license": "MIT"
 }

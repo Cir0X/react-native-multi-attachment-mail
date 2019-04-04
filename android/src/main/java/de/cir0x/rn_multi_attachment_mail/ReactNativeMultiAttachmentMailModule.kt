@@ -2,6 +2,10 @@ package de.cir0x.rn_multi_attachment_mail
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.support.v4.content.FileProvider
+import android.text.Html
+import android.text.Spanned
 import com.facebook.react.bridge.*
 import java.io.File
 
@@ -21,11 +25,10 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
         }
 
         if (doesKeyExist(KEY_BODY, options)) {
-            val body = options.getString(KEY_BODY)
-            val extraKey = if (doesKeyExist(KEY_IS_HTML, options)) {
-                Intent.EXTRA_HTML_TEXT
+            val (body, extraKey) = if (doesKeyExist(KEY_IS_HTML, options)) {
+                Pair(options.getString(KEY_BODY).toHtml(), Intent.EXTRA_HTML_TEXT)
             } else {
-                Intent.EXTRA_TEXT
+                Pair(options.getString(KEY_BODY), Intent.EXTRA_TEXT)
             }
             mailIntent.putExtra(extraKey, body)
         }
@@ -45,9 +48,9 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
             mailIntent.putExtra(Intent.EXTRA_BCC, bccRecipients.getStringArray())
         }
 
-        if (doesKeyExist(KEY_ATTACHMENTS, options))  {
+        if (doesKeyExist(KEY_ATTACHMENTS, options)) {
             val attachments = options.getArray(KEY_ATTACHMENTS)
-            mailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments.getUriArray())
+            mailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments.getContentUriArray())
         }
 
         // send intent
@@ -57,13 +60,23 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
 
     private fun doesKeyExist(key: String, options: ReadableMap) = options.hasKey(key) && !options.isNull(key)
 
+    private fun File.getContentUri() = FileProvider.getUriForFile(reactContext, "${reactContext.packageName}.fileprovider", this)
+
+    @SuppressWarnings("deprecation")
+    private fun String.toHtml(): Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+    } else {
+        Html.fromHtml(this)
+    }
+
     private fun ReadableArray.getStringArray() = (0 until this.size()).map {
         this.getString(it)
     }.toTypedArray()
 
-    private fun ReadableArray.getUriArray(): ArrayList<Uri> = (0 until this.size()).map {
+
+    private fun ReadableArray.getContentUriArray(): ArrayList<Uri> = (0 until this.size()).map {
         val file = File(this.getString(it))
-        Uri.fromFile(file)
+        file.getContentUri()
     }.toCollection(ArrayList())
 
 
