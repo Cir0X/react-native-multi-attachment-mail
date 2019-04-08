@@ -26,12 +26,12 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
         }
 
         if (doesKeyExist(KEY_BODY, options)) {
-            val (body, extraKey) = if (doesKeyExist(KEY_IS_HTML, options)) {
-                Pair(options.getString(KEY_BODY).toHtml(), Intent.EXTRA_HTML_TEXT)
+            val body = if (doesKeyExist(KEY_IS_HTML, options)) {
+                options.getString(KEY_BODY).toHtml()
             } else {
-                Pair(options.getString(KEY_BODY), Intent.EXTRA_TEXT)
+                options.getString(KEY_BODY)
             }
-            mailIntent.putExtra(extraKey, body)
+            mailIntent.putExtra(Intent.EXTRA_TEXT, body)
         }
 
         if (doesKeyExist(KEY_RECIPIENTS, options)) {
