@@ -18,6 +18,7 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
     @ReactMethod
     public fun mail(options: ReadableMap, callback: Callback) {
         val mailIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
+        mailIntent.type = "message/rfc822"
 
         if (doesKeyExist(KEY_SUBJECT, options)) {
             val subject = options.getString(KEY_SUBJECT)
@@ -26,7 +27,6 @@ class ReactNativeMultiAttachmentMailModule(private val reactContext: ReactApplic
 
         if (doesKeyExist(KEY_BODY, options)) {
             val (body, extraKey) = if (doesKeyExist(KEY_IS_HTML, options)) {
-                mailIntent.type = "text/html"
                 Pair(options.getString(KEY_BODY).toHtml(), Intent.EXTRA_HTML_TEXT)
             } else {
                 Pair(options.getString(KEY_BODY), Intent.EXTRA_TEXT)
